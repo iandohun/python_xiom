@@ -162,7 +162,25 @@ cafe_last = Cafe24_sosang_df.dropna()
 
 cafe_last.to_excel(excel_writer='C:/kwakcode/auto_cafe24/주문서/송장/Cafe_24_송장_' + nowDate + '.xlsx',index=None)
 
+#송장부분 완료
 
+# 주문서에서 중복항목 제거후 수량 찾기 SUMif 하기 중복제거 / 품목코드 : New_Cafe24_list_sum 수량 : New_Cafe24_list_sulyang
+New_Cafe24_sum = []
+for v in range(len(Cafe24_df)):
+    New_Cafe24_sum.append(str(Cafe24_df['상품품목코드'][v]))
+New_Cafe24_list_sum = []
+for v in New_Cafe24_sum:
+    if v not in New_Cafe24_list_sum:
+        New_Cafe24_list_sum.append(v)
+New_Cafe24_list_sulyang = []
+for v in range(len(New_Cafe24_list_sum)):
+    New_Cafe24_list_sulyang.append(Cafe24_df.loc[Cafe24_df['상품품목코드'] == New_Cafe24_list_sum[v],'수량'].sum())
+if len(New_Cafe24_list_sum) == len(New_Cafe24_list_sulyang):
+    print("품목 {} 수량 {} 동일함".format(len(New_Cafe24_list_sum),len(New_Cafe24_list_sulyang)))
+if len(New_Cafe24_list_sum) != len(New_Cafe24_list_sulyang):
+    print("품목 {} 수량 {} 동일 하지 않음 재 검토 필요".format(len(New_Cafe24_list_sum),len(New_Cafe24_list_sulyang)))
+    import sys
+    sys.exit()
 
 # 상품코드기준 수량으로 부분합하기
 cafe24_df_sum = Cafe24_df.groupby('상품품목코드')['수량'].sum()
